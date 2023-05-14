@@ -1,4 +1,4 @@
-package gerenciador;
+package classes;
 
 public class Gerenciador {
     public static void main(String[] args) {
