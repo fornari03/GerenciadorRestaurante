@@ -1,15 +1,19 @@
 package classes;
 
-public class Entregador extends Pessoa {
+public class Entregador extends Funcionario {
     // atributos
     private String CNH;
     private int quantidadeEntregas;
 
     // metodos
-    public Entregador(String nome, String CPF, String CNH) {
-        this.nome = nome;
-        this.CPF = CPF;
+    public Entregador(String nome, String CPF, double salario, String CNH) {
+        super(nome, CPF, salario);
         this.CNH = CNH;
+    }
+
+    // metodos
+    public void addQuantidadeEntregas(int quantidadeEntregas) {
+        this.quantidadeEntregas++;
     }
 
     // metodos getters e setters
@@ -23,10 +27,6 @@ public class Entregador extends Pessoa {
 
     public int getQuantidadeEntregas() {
         return quantidadeEntregas;
-    }
-
-    public void setQuantidadeEntregas(int quantidadeEntregas) {
-        this.quantidadeEntregas = quantidadeEntregas;
     }
 
 }

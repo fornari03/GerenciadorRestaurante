@@ -1,14 +1,13 @@
 package classes;
 
-public class Garcom extends Pessoa {
+public class Garcom extends Funcionario {
     // atributos
     private int quantidadeAtendimentos;
     private Comanda comanda;
 
     // metodos
-    public Garcom(String nome, String CPF) {
-        this.nome = nome;
-        this.CPF = CPF;
+    public Garcom(String nome, String CPF, double salario) {
+        super(nome, CPF, salario);
     }
 
     public void atenderMesa(Mesa mesa) {

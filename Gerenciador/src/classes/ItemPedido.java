@@ -6,8 +6,9 @@ public class ItemPedido {
     private double valor;
 
     // metodos
-    public ItemPedido() {
-        // a ser desenvolvido
+    public ItemPedido(String descricao, double valor) {
+        this.descricao = descricao;
+        this.valor = valor;
     }
 
     // metodos getters e setters

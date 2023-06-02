@@ -1,13 +1,12 @@
 package classes;
 
-public class Gerente extends Pessoa {
+public class Gerente extends Funcionario {
     // atributos
     private int senha;
     
     // metodos
-    public Gerente(String nome, String CPF, int senha) {
-        this.nome = nome;
-        this.CPF = CPF;
+    public Gerente(String nome, String CPF, double salario, int senha) {
+        super(nome, CPF, salario);
         this.senha = senha;
     }
 

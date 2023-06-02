@@ -8,8 +8,12 @@ public class Mesa {
     private Comanda comanda;
 
     // metodos
-    public Mesa() {
+    public Mesa(int numeroMesa, int capacidade) {
         // a ser desenvolvido
+        this.numeroMesa = numeroMesa;
+        this.capacidade = capacidade;
+        this.disponivel = true;
+        Controle.mesas.add(this);
     }
 
     public void liberarMesa() {
@@ -17,7 +21,6 @@ public class Mesa {
             this.disponivel = true;
             comanda = null;
     }
-
 
     // metodos getters e setters
     public int getNumeroMesa() {
@@ -30,6 +33,10 @@ public class Mesa {
 
     public boolean isDisponivel() {
         return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
     }
 
     public int getCapacidade() {

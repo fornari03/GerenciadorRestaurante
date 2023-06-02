@@ -5,6 +5,12 @@ public abstract class Pessoa {
     protected String nome;
     protected String CPF;
 
+    // metodos
+    public Pessoa(String nome, String CPF) {
+        this.nome = nome;
+        this.CPF = CPF;
+    }
+
     // metodos getters e setters
     public String getNome() {
         return nome;

@@ -2,7 +2,7 @@ package classes;
 
 import java.time.LocalDate;
 
-public class Cliente extends Pessoa {
+public class Cliente extends Funcionario {
     // atributos
     private String email;
     private String telefone;
@@ -11,20 +11,23 @@ public class Cliente extends Pessoa {
     private int quantidadePedidos;
     
     // metodos
-    public Cliente(String nome, String CPF, String email, String endereço, LocalDate aniversario) {
-        this.nome = nome;
-        this.CPF = CPF;
+    public Cliente(String nome, String CPF, double salario,String email, String endereço, LocalDate aniversario) {
+        super(nome, CPF, salario);
         this.email = email;
         this.endereço = endereço;
         this.aniversario = aniversario;
+        Controle.clientes.add(this);
     }
 
     public void realizarPedido() {
-        // a ser desenvolvido
+        quantidadePedidos++;
     }
 
     public boolean ganharBrinde() {
-        // a ser desenvolvido
+        LocalDate dataDia = LocalDate.now();
+        // se for o mesmo mês e dia do aniversario do cliente, ganharBrinde() é true
+        if (aniversario.getMonth().equals(dataDia.getMonth()) && aniversario.getDayOfMonth() == dataDia.getDayOfMonth())
+            return true;
         return false;
     }
 
