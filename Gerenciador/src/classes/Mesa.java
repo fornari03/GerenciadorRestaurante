@@ -13,13 +13,13 @@ public class Mesa {
         this.numeroMesa = numeroMesa;
         this.capacidade = capacidade;
         this.disponivel = true;
-        Controle.mesas.add(this);
     }
 
     public void liberarMesa() {
-        if (!disponivel)
+        if (!disponivel) {
             this.disponivel = true;
             comanda = null;
+        }
     }
 
     // metodos getters e setters

@@ -2,7 +2,7 @@ package classes;
 
 import java.time.LocalDate;
 
-public class Cliente extends Funcionario {
+public class Cliente extends Pessoa {
     // atributos
     private String email;
     private String telefone;
@@ -11,12 +11,12 @@ public class Cliente extends Funcionario {
     private int quantidadePedidos;
     
     // metodos
-    public Cliente(String nome, String CPF, double salario,String email, String endereço, LocalDate aniversario) {
-        super(nome, CPF, salario);
+    public Cliente(String nome, String CPF,String email, String endereço, LocalDate aniversario, int quantidadePedidos) {
+        super(nome, CPF);
         this.email = email;
         this.endereço = endereço;
         this.aniversario = aniversario;
-        Controle.clientes.add(this);
+        this.quantidadePedidos = quantidadePedidos;
     }
 
     public void realizarPedido() {
@@ -26,13 +26,7 @@ public class Cliente extends Funcionario {
     public boolean ganharBrinde() {
         LocalDate dataDia = LocalDate.now();
         // se for o mesmo mês e dia do aniversario do cliente, ganharBrinde() é true
-        if (aniversario.getMonth().equals(dataDia.getMonth()) && aniversario.getDayOfMonth() == dataDia.getDayOfMonth())
-            return true;
-        return false;
-    }
-
-    public void addQuantidadePedidos() {
-        this.quantidadePedidos++;
+        return (aniversario.getMonth().equals(dataDia.getMonth()) && aniversario.getDayOfMonth() == dataDia.getDayOfMonth());
     }
 
     // metodos getters e setters
@@ -70,6 +64,10 @@ public class Cliente extends Funcionario {
 
     public int getQuantidadePedidos() {
         return quantidadePedidos;
+    }
+    
+    public void setQuantidadePedidos(int quantidadePedidos) {
+        this.quantidadePedidos = quantidadePedidos;
     }
 
 }

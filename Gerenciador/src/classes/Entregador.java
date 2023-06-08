@@ -1,14 +1,17 @@
 package classes;
 
+import java.time.LocalDate;
+
 public class Entregador extends Funcionario {
     // atributos
     private String CNH;
     private int quantidadeEntregas;
 
     // metodos
-    public Entregador(String nome, String CPF, double salario, String CNH) {
-        super(nome, CPF, salario);
+    public Entregador(String nome, String CPF, double salario, LocalDate diaContratado, String CNH, int quantidadeEntregas) {
+        super(nome, CPF, salario, diaContratado);
         this.CNH = CNH;
+        this.quantidadeEntregas = quantidadeEntregas;
     }
 
     // metodos
@@ -29,4 +32,8 @@ public class Entregador extends Funcionario {
         return quantidadeEntregas;
     }
 
+    public void setQuantidadeEntregas(int quantidadeEntregas) {
+        this.quantidadeEntregas = quantidadeEntregas;
+    }
+    
 }

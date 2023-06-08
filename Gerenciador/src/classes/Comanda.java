@@ -49,15 +49,15 @@ public class Comanda {
     public void addBrinde() {
         // se for aniversario do cliente, adiciona-se um brownie gratuito na comanda
         if (cliente.ganharBrinde()) {
-            ItemPedido brinde = new ItemPedido("Brownie", 0);
-            itens.add(brinde);
+            //ItemPedido brinde = new ItemPedido(brownieFREE, 1);
+            //itens.add(brinde);
         }
     }
 
     public void calculaValorTotal() {
         // quando o pedido for finalizado, chama-se este método para calcular o valor total da comanda
         for (ItemPedido item : itens) {
-            valorTotal += item.getValor();
+            valorTotal += item.getValorConjunto();
         }
     }
 
@@ -102,7 +102,11 @@ public class Comanda {
     public boolean isFinalizada() {
         return finalizada;
     }
-
+    
+    public void setFinalizada(boolean finalizada) {
+        this.finalizada = finalizada;
+    }
+    
     public Cliente getCliente() {
         return cliente;
     }
@@ -117,9 +121,10 @@ public class Comanda {
     }
 
     public void setMesa(Mesa mesa) {
-        if (!finalizada) // só é permitido alterar algo da comanda se ela ainda estiver aberta
+        if (!finalizada) {// só é permitido alterar algo da comanda se ela ainda estiver aberta
             this.mesa = mesa;
             delivery = false; // se tiver uma mesa, não é delivery
+        }
     }
 
     public ArrayList<ItemPedido> getItens() {

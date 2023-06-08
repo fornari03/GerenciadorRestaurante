@@ -2,30 +2,41 @@ package classes;
 
 public class ItemPedido {
     // atributos
-    private String descricao;
-    private double valor;
+    private int quantidade;
+    private double valorConjunto;
+    private Produto produto;
 
     // metodos
-    public ItemPedido(String descricao, double valor) {
-        this.descricao = descricao;
-        this.valor = valor;
+    public ItemPedido(Produto produto, int quantidade) {
+        this.quantidade = quantidade;
+        this.produto = produto;
+        this.valorConjunto = quantidade*produto.getValor();
     }
 
     // metodos getters e setters
-    public String getDescricao() {
-        return descricao;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public double getValor() {
-        return valor;
+    public double getValorConjunto() {
+        return valorConjunto;
     }
 
-    public void setValor(double valor) {
-        this.valor = valor;
+    public void setValorConjunto(double valorConjunto) {
+        this.valorConjunto = valorConjunto;
     }
 
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    
 }
