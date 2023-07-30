@@ -1,0 +1,15 @@
+1, Filé com fritas, 39.9
+2, Frango à parmegiana, 33.9
+3, Frango à passarinho, 32.9
+4, Hambúrguer bovínio, 28.9
+5, Picanha com farofa, 39.9
+6, Feijoada, 42.9
+7, Salada de atum, 24.9
+8, Pão de alho, 3.9
+9, Silveirinha de carne, 22.9
+10, Frangão Atômico, 26.9
+11, Brownie de chocolate, 15.9
+12, Sorvete, 14.9
+13, Água sem gás, 4.9
+14, Refrigerante, 6.9
+15, Limonada, 10.9
