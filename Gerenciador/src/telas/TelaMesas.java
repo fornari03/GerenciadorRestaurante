@@ -1,20 +1,154 @@
 package telas;
 
+import classes.Comanda;
+import classes.ComandaTableModel;
 import classes.Controle;
-import classes.Sistema;
-import javax.swing.JOptionPane;
+import classes.Mesa;
+import java.time.format.DateTimeFormatter;
 
+/**
+ * Classe para a tela das mesas (tela principal)
+ */
 public class TelaMesas extends javax.swing.JFrame {
 
-            
+    /**
+     * Método construtor da classe
+     */        
     public TelaMesas() {
         initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
-        Controle.sistema = new Sistema();
-        Controle.sistema.abrirSistema();
-        
+        this.btnMesa1.requestFocus();
+
+        // instancia todas as mesas e atribui os respectivos botões a elas
+        Mesa mesa1 = new Mesa(1, 10);
+        Mesa mesa2 = new Mesa(2, 4);
+        Mesa mesa3 = new Mesa(3, 5);
+        Mesa mesa4 = new Mesa(4, 8);
+        Mesa mesa5 = new Mesa(5, 10);
+        Mesa mesa6 = new Mesa(6, 4);
+        Mesa mesa7 = new Mesa(7, 10);
+        Mesa mesa8 = new Mesa(8, 6);
+        Mesa mesa9 = new Mesa(9, 9);
+        Mesa mesa10 = new Mesa(10, 8);
+        Mesa mesa11 = new Mesa(11, 6);
+        Mesa mesa12 = new Mesa(12, 4);
+        Mesa mesa13 = new Mesa(13, 6);
+        Mesa mesa14 = new Mesa(14, 4);
+        Mesa mesa15 = new Mesa(15, 4);
+        Mesa mesa16 = new Mesa(16, 4);
+        mesa1.setBotao(btnMesa1);
+        mesa2.setBotao(btnMesa2);
+        mesa3.setBotao(btnMesa3);
+        mesa4.setBotao(btnMesa4);
+        mesa5.setBotao(btnMesa5);
+        mesa6.setBotao(btnMesa6);
+        mesa7.setBotao(btnMesa7);
+        mesa8.setBotao(btnMesa8);
+        mesa9.setBotao(btnMesa9);
+        mesa10.setBotao(btnMesa10);
+        mesa11.setBotao(btnMesa11);
+        mesa12.setBotao(btnMesa12);
+        mesa13.setBotao(btnMesa13);
+        mesa14.setBotao(btnMesa14);
+        mesa15.setBotao(btnMesa15);
+        mesa16.setBotao(btnMesa16);
+        Controle.mesas.add(mesa1);
+        Controle.mesas.add(mesa2);
+        Controle.mesas.add(mesa3);
+        Controle.mesas.add(mesa4);
+        Controle.mesas.add(mesa5);
+        Controle.mesas.add(mesa6);
+        Controle.mesas.add(mesa7);
+        Controle.mesas.add(mesa8);
+        Controle.mesas.add(mesa9);
+        Controle.mesas.add(mesa10);
+        Controle.mesas.add(mesa11);
+        Controle.mesas.add(mesa12);
+        Controle.mesas.add(mesa13);
+        Controle.mesas.add(mesa14);
+        Controle.mesas.add(mesa15);
+        Controle.mesas.add(mesa16);
     }
 
+    /**
+     * Método para mostrar as informações da mesa selecionada na tela
+     * @param mesa Mesa seleiconada para serem mostradas suas informações
+     */
+    private void mostraInfos(Mesa mesa) {
+        // coloca as informações da mesa nos respectivos campos
+        // método chamado por todos os botões das mesas
+        this.lblMesa.setText("Mesa " + mostraNumMesa(mesa));
+        this.lblNumMesaDescricao.setText(mostraNumMesa(mesa));
+        if (mesa.isDisponivel())
+            this.lblOcupadaDescricao.setText("Não");
+        else
+            this.lblOcupadaDescricao.setText("Sim");
+        this.lblCapacidadeDescricao.setText(String.valueOf(mesa.getCapacidade()) + " pessoas");
+        
+        // a partir desses, verifica se na mesa há uma comanda antes de preencher os campos
+        try {
+            this.lblIdComandaDescricao.setText(String.valueOf(mesa.getComanda().getIdComanda()));
+        } catch (Exception e) {
+            this.lblIdComandaDescricao.setText("N/A");
+        }
+        try {
+            this.lblHoraPedidoComandaDescricao.setText(mesa.getComanda().getHoraPedido().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        } catch (Exception e) {
+            this.lblHoraPedidoComandaDescricao.setText("N/A");
+        }
+        try {
+            mesa.getComanda();
+            if (mesa.getComanda().getCliente() != null)
+                this.lblClienteComandaDescricao.setText(String.valueOf(mesa.getComanda().getCliente().getNome()));
+            else
+                this.lblClienteComandaDescricao.setText("N/A");
+        } catch (Exception e) {
+            this.lblClienteComandaDescricao.setText("N/A");
+        }
+        try {
+            this.lblGarcomComandaDescricao.setText(String.valueOf(mesa.getComanda().getGarcom().getNome()));
+        } catch(Exception e) {
+            this.lblGarcomComandaDescricao.setText("N/A");
+        }
+        try {
+            mesa.getComanda().calculaValorParcial();
+            this.lblValorParcialComandaDescricao.setText(String.format("%.2f", mesa.getComanda().getValorTotal()) + " reais");
+        } catch(Exception e) {
+            this.lblValorParcialComandaDescricao.setText("N/A");
+        }
+        try {
+            if (mesa.getComanda() != null) {
+                ComandaTableModel modelo = new ComandaTableModel();
+                modelo.addLista(mesa.getComanda().getItens());
+                this.tblItensPedidosComanda.setModel(modelo);
+            } else {
+                ComandaTableModel modelo = new ComandaTableModel();
+                this.tblItensPedidosComanda.setModel(modelo);
+            }
+        } catch (Exception e) {
+            ComandaTableModel modelo = new ComandaTableModel();
+            this.tblItensPedidosComanda.setModel(modelo);
+        }
+    }
+    
+    /**
+     * Método para mostrar o número da mesa de maneira formatada
+     * @param mesa Mesa seleiconada para serem mostradas suas informações
+     * @return Retorna uma String que é o texto formatado para aparecer na tela
+     */
+    private String mostraNumMesa(Mesa mesa) {
+        // apenas mostra o número da mesa de maneira mais elegante
+        if (mesa.getNumeroMesa() >= 10)
+            return String.valueOf(mesa.getNumeroMesa());
+        else
+            return "0" + String.valueOf(mesa.getNumeroMesa());
+    }
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -50,39 +184,41 @@ public class TelaMesas extends javax.swing.JFrame {
         lblHoraPedidoComanda = new javax.swing.JLabel();
         lblValorParcialComanda = new javax.swing.JLabel();
         lblItensPedidosComanda = new javax.swing.JLabel();
-        txtIdComanda = new javax.swing.JTextField();
-        cmbClienteComanda = new javax.swing.JComboBox<>();
-        txtHoraPedidoComanda = new javax.swing.JTextField();
-        txtValorParcialComanda = new javax.swing.JTextField();
         lblGarcomComanda = new javax.swing.JLabel();
-        cmbGarcomComanda = new javax.swing.JComboBox<>();
         scrItensPedidosComanda = new javax.swing.JScrollPane();
         tblItensPedidosComanda = new javax.swing.JTable();
-        btnFecharComanda = new javax.swing.JButton();
+        btnComandaEspecial = new javax.swing.JButton();
+        lblIdComandaDescricao = new javax.swing.JLabel();
+        lblClienteComandaDescricao = new javax.swing.JLabel();
+        lblGarcomComandaDescricao = new javax.swing.JLabel();
+        lblHoraPedidoComandaDescricao = new javax.swing.JLabel();
+        lblValorParcialComandaDescricao = new javax.swing.JLabel();
         lblVisualizacaoMesas = new javax.swing.JLabel();
-        jMenuBar2 = new javax.swing.JMenuBar();
+        jmbPrincipal = new javax.swing.JMenuBar();
         mnCadastro = new javax.swing.JMenu();
         mniCadastrarCliente = new javax.swing.JMenuItem();
         mniCadastrarFuncionario = new javax.swing.JMenuItem();
         mnPedidos = new javax.swing.JMenu();
-        mniPedidosSalao = new javax.swing.JMenuItem();
-        mniPedidosDelivery = new javax.swing.JMenuItem();
+        mniNovoPedidoSalao = new javax.swing.JMenuItem();
+        mniNovoPedidoDelivery = new javax.swing.JMenuItem();
         mnRelatórios = new javax.swing.JMenu();
-        mniRelatorioClientes = new javax.swing.JMenuItem();
+        mniRelatorioPedidos = new javax.swing.JMenuItem();
         mniRelatorioFuncionarios = new javax.swing.JMenuItem();
-        mniRelatorioFinanceiro = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        mniRelatorioClientes = new javax.swing.JMenuItem();
+        mniRelatorioGeral = new javax.swing.JMenuItem();
+        mnCardapio = new javax.swing.JMenu();
+        mniEditarCardapio = new javax.swing.JMenuItem();
         mnSistema = new javax.swing.JMenu();
-        mniSalvar = new javax.swing.JMenuItem();
         mniFecharSistema = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Carvalho's Grill");
         setAutoRequestFocus(false);
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/CarvalhoGrill.png")).getImage());
 
         btnMesa1.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa1ActionPerformed(evt);
@@ -91,6 +227,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa2.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa2ActionPerformed(evt);
@@ -99,6 +236,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa3.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa3ActionPerformed(evt);
@@ -107,6 +245,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa4.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa4ActionPerformed(evt);
@@ -115,6 +254,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa5.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa5ActionPerformed(evt);
@@ -123,7 +263,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa6.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
-        btnMesa6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 51, 51), 3));
+        btnMesa6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 0, true));
         btnMesa6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa6ActionPerformed(evt);
@@ -132,6 +272,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa7.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa7ActionPerformed(evt);
@@ -140,6 +281,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa8.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa8ActionPerformed(evt);
@@ -148,6 +290,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa9.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa9ActionPerformed(evt);
@@ -156,6 +299,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa10.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa10ActionPerformed(evt);
@@ -164,6 +308,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa11.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa11.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa11ActionPerformed(evt);
@@ -172,6 +317,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa12.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa12ActionPerformed(evt);
@@ -180,6 +326,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa13.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa13ActionPerformed(evt);
@@ -188,6 +335,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa14.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa14ActionPerformed(evt);
@@ -197,6 +345,7 @@ public class TelaMesas extends javax.swing.JFrame {
         btnMesa15.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa15.setForeground(new java.awt.Color(242, 242, 242));
         btnMesa15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa15ActionPerformed(evt);
@@ -205,6 +354,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         btnMesa16.setBackground(new java.awt.Color(242, 242, 242));
         btnMesa16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/teste mesa 3.png"))); // NOI18N
+        btnMesa16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
         btnMesa16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMesa16ActionPerformed(evt);
@@ -214,7 +364,7 @@ public class TelaMesas extends javax.swing.JFrame {
         pnlMesaSelecionada.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lblMesa.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        lblMesa.setText("Mesa XX");
+        lblMesa.setText("Mesa 01");
 
         lblNumMesa.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblNumMesa.setText("Nº da mesa:");
@@ -229,13 +379,13 @@ public class TelaMesas extends javax.swing.JFrame {
         lblDetalhesComanda.setText("Detalhes da comanda:");
 
         lblNumMesaDescricao.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lblNumMesaDescricao.setText("XX");
+        lblNumMesaDescricao.setText("1");
 
         lblOcupadaDescricao.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblOcupadaDescricao.setText("Não");
 
         lblCapacidadeDescricao.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lblCapacidadeDescricao.setText("X pessoas");
+        lblCapacidadeDescricao.setText("5 pessoas");
 
         lblIdComanda.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblIdComanda.setText("ID:");
@@ -252,23 +402,8 @@ public class TelaMesas extends javax.swing.JFrame {
         lblItensPedidosComanda.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblItensPedidosComanda.setText("Itens pedidos:");
 
-        cmbClienteComanda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cliente", " " }));
-        cmbClienteComanda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbClienteComandaActionPerformed(evt);
-            }
-        });
-
-        txtValorParcialComanda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtValorParcialComandaActionPerformed(evt);
-            }
-        });
-
         lblGarcomComanda.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblGarcomComanda.setText("Garçom:");
-
-        cmbGarcomComanda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Garçom" }));
 
         tblItensPedidosComanda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -293,13 +428,30 @@ public class TelaMesas extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblItensPedidosComanda.getTableHeader().setReorderingAllowed(false);
         scrItensPedidosComanda.setViewportView(tblItensPedidosComanda);
         if (tblItensPedidosComanda.getColumnModel().getColumnCount() > 0) {
-            tblItensPedidosComanda.getColumnModel().getColumn(0).setMaxWidth(80);
-            tblItensPedidosComanda.getColumnModel().getColumn(2).setMaxWidth(55);
+            tblItensPedidosComanda.getColumnModel().getColumn(0).setResizable(false);
+            tblItensPedidosComanda.getColumnModel().getColumn(1).setResizable(false);
+            tblItensPedidosComanda.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        btnFecharComanda.setText("Fechar comanda");
+        btnComandaEspecial.setText("Comanda");
+        btnComandaEspecial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnComandaEspecialActionPerformed(evt);
+            }
+        });
+
+        lblIdComandaDescricao.setText("N/A");
+
+        lblClienteComandaDescricao.setText("N/A");
+
+        lblGarcomComandaDescricao.setText("N/A");
+
+        lblHoraPedidoComandaDescricao.setText("N/A");
+
+        lblValorParcialComandaDescricao.setText("N/A");
 
         javax.swing.GroupLayout pnlComandaMesaLayout = new javax.swing.GroupLayout(pnlComandaMesa);
         pnlComandaMesa.setLayout(pnlComandaMesaLayout);
@@ -319,55 +471,49 @@ public class TelaMesas extends javax.swing.JFrame {
                             .addComponent(lblGarcomComanda)
                             .addComponent(lblItensPedidosComanda)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlComandaMesaLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(btnFecharComanda)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlComandaMesaLayout.createSequentialGroup()
-                        .addGap(223, 223, 223)
-                        .addComponent(txtIdComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57))
-                    .addGroup(pnlComandaMesaLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(scrItensPedidosComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(cmbClienteComanda, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cmbGarcomComanda, 0, 170, Short.MAX_VALUE))
-                            .addComponent(txtHoraPedidoComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtValorParcialComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(20, 20, 20))))
+                        .addGap(61, 61, 61)
+                        .addComponent(btnComandaEspecial)))
+                .addGap(18, 18, 18)
+                .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(scrItensPedidosComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblValorParcialComandaDescricao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                            .addComponent(lblHoraPedidoComandaDescricao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblClienteComandaDescricao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblGarcomComandaDescricao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(lblIdComandaDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
         );
         pnlComandaMesaLayout.setVerticalGroup(
             pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlComandaMesaLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtIdComanda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblIdComanda))
+                    .addComponent(lblIdComanda)
+                    .addComponent(lblIdComandaDescricao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbClienteComanda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblClienteComanda))
+                    .addComponent(lblClienteComanda)
+                    .addComponent(lblClienteComandaDescricao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlComandaMesaLayout.createSequentialGroup()
-                        .addComponent(lblGarcomComanda)
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtHoraPedidoComanda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblHoraPedidoComanda))
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblValorParcialComanda)
-                            .addComponent(txtValorParcialComanda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(cmbGarcomComanda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblGarcomComanda)
+                    .addComponent(lblGarcomComandaDescricao))
+                .addGap(18, 18, 18)
+                .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHoraPedidoComanda)
+                    .addComponent(lblHoraPedidoComandaDescricao))
+                .addGap(18, 18, 18)
+                .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblValorParcialComanda)
+                    .addComponent(lblValorParcialComandaDescricao))
+                .addGap(14, 14, 14)
                 .addGroup(pnlComandaMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlComandaMesaLayout.createSequentialGroup()
                         .addComponent(lblItensPedidosComanda)
                         .addGap(111, 111, 111)
-                        .addComponent(btnFecharComanda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnComandaEspecial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(scrItensPedidosComanda, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -435,6 +581,7 @@ public class TelaMesas extends javax.swing.JFrame {
 
         mniCadastrarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/pessoa.png"))); // NOI18N
         mniCadastrarCliente.setText("Cadastrar Cliente");
+        mniCadastrarCliente.setToolTipText("");
         mniCadastrarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mniCadastrarClienteActionPerformed(evt);
@@ -451,41 +598,44 @@ public class TelaMesas extends javax.swing.JFrame {
         });
         mnCadastro.add(mniCadastrarFuncionario);
 
-        jMenuBar2.add(mnCadastro);
+        jmbPrincipal.add(mnCadastro);
 
         mnPedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Comanda.png"))); // NOI18N
         mnPedidos.setText("Pedidos");
 
-        mniPedidosSalao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/comidaPresencial.png"))); // NOI18N
-        mniPedidosSalao.setText("Pedidos do salão");
-        mniPedidosSalao.addActionListener(new java.awt.event.ActionListener() {
+        mniNovoPedidoSalao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/comidaPresencial.png"))); // NOI18N
+        mniNovoPedidoSalao.setText("Novo Pedido salão");
+        mniNovoPedidoSalao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniPedidosSalaoActionPerformed(evt);
+                mniNovoPedidoSalaoActionPerformed(evt);
             }
         });
-        mnPedidos.add(mniPedidosSalao);
+        mnPedidos.add(mniNovoPedidoSalao);
 
-        mniPedidosDelivery.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/comida delivery.png"))); // NOI18N
-        mniPedidosDelivery.setText("Pedidos delivery");
-        mniPedidosDelivery.addActionListener(new java.awt.event.ActionListener() {
+        mniNovoPedidoDelivery.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Delivery.png"))); // NOI18N
+        mniNovoPedidoDelivery.setText("Novo Pedido delivery");
+        mniNovoPedidoDelivery.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniPedidosDeliveryActionPerformed(evt);
+                mniNovoPedidoDeliveryActionPerformed(evt);
             }
         });
-        mnPedidos.add(mniPedidosDelivery);
+        mnPedidos.add(mniNovoPedidoDelivery);
 
-        jMenuBar2.add(mnPedidos);
+        jmbPrincipal.add(mnPedidos);
 
+        mnRelatórios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/book_learning_notebook_reading_study_icon_127253.png"))); // NOI18N
         mnRelatórios.setText("Relatórios");
 
-        mniRelatorioClientes.setText("Clientes");
-        mniRelatorioClientes.addActionListener(new java.awt.event.ActionListener() {
+        mniRelatorioPedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/garfo com comida.png"))); // NOI18N
+        mniRelatorioPedidos.setText("Pedidos");
+        mniRelatorioPedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniRelatorioClientesActionPerformed(evt);
+                mniRelatorioPedidosActionPerformed(evt);
             }
         });
-        mnRelatórios.add(mniRelatorioClientes);
+        mnRelatórios.add(mniRelatorioPedidos);
 
+        mniRelatorioFuncionarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/funcionario relatorio.png"))); // NOI18N
         mniRelatorioFuncionarios.setText("Funcionários");
         mniRelatorioFuncionarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -494,34 +644,44 @@ public class TelaMesas extends javax.swing.JFrame {
         });
         mnRelatórios.add(mniRelatorioFuncionarios);
 
-        mniRelatorioFinanceiro.setText("Financeiro");
-        mniRelatorioFinanceiro.addActionListener(new java.awt.event.ActionListener() {
+        mniRelatorioClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/pessoas relatorio.png"))); // NOI18N
+        mniRelatorioClientes.setText("Clientes");
+        mniRelatorioClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniRelatorioFinanceiroActionPerformed(evt);
+                mniRelatorioClientesActionPerformed(evt);
             }
         });
-        mnRelatórios.add(mniRelatorioFinanceiro);
+        mnRelatórios.add(mniRelatorioClientes);
 
-        jMenuItem1.setText("Pedidos");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        mniRelatorioGeral.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Geral relatorio.png"))); // NOI18N
+        mniRelatorioGeral.setText("Geral");
+        mniRelatorioGeral.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                mniRelatorioGeralActionPerformed(evt);
             }
         });
-        mnRelatórios.add(jMenuItem1);
+        mnRelatórios.add(mniRelatorioGeral);
 
-        jMenuBar2.add(mnRelatórios);
+        jmbPrincipal.add(mnRelatórios);
 
+        mnCardapio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/menu_restaurant_coffee_icon_210178.png"))); // NOI18N
+        mnCardapio.setText("Cardápio");
+
+        mniEditarCardapio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/cardapio.png"))); // NOI18N
+        mniEditarCardapio.setText("Editar Cardápio");
+        mniEditarCardapio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniEditarCardapioActionPerformed(evt);
+            }
+        });
+        mnCardapio.add(mniEditarCardapio);
+
+        jmbPrincipal.add(mnCardapio);
+
+        mnSistema.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/systemfilemanager_94456.png"))); // NOI18N
         mnSistema.setText("Sistema");
 
-        mniSalvar.setText("Salvar");
-        mniSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mniSalvarActionPerformed(evt);
-            }
-        });
-        mnSistema.add(mniSalvar);
-
+        mniFecharSistema.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Exit-Page_icon-icons.com_53732.png"))); // NOI18N
         mniFecharSistema.setText("Fechar Sistema");
         mniFecharSistema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -530,9 +690,9 @@ public class TelaMesas extends javax.swing.JFrame {
         });
         mnSistema.add(mniFecharSistema);
 
-        jMenuBar2.add(mnSistema);
+        jmbPrincipal.add(mnSistema);
 
-        setJMenuBar(jMenuBar2);
+        setJMenuBar(jmbPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -615,144 +775,147 @@ public class TelaMesas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(41, 41, 41)
                         .addComponent(pnlMesaSelecionada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(128, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mniPedidosDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniPedidosDeliveryActionPerformed
+    private void mniNovoPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniNovoPedidoDeliveryActionPerformed
         new NovoDelivery().setVisible(true);
-    }
+    }//GEN-LAST:event_mniNovoPedidoDeliveryActionPerformed
 
     private void btnMesa1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa1ActionPerformed
-        // habilita o painel de mesa selecionada e coloca as informações da mesa nos respectivos campos
-        this.pnlMesaSelecionada.setEnabled(false);
-        this.lblNumMesa.setText(String.valueOf(Controle.mesas.get(0).getNumeroMesa()));
-        if (Controle.mesas.get(0).isDisponivel())
-            this.lblOcupada.setText("Não");
-        else
-            this.lblOcupada.setText("Sim");
-        this.lblCapacidade.setText(String.valueOf(Controle.mesas.get(0).getCapacidade()));
-        this.txtIdComanda.setText(String.valueOf(Controle.mesas.get(0).getComanda().getIdComanda()));
-        // combobox do cliente
-        this.txtHoraPedidoComanda.setText(String.valueOf(Controle.mesas.get(0).getComanda().getHoraPedido()));
-        // valor parcial
-        // itens pedidos text area
-        
-    }
+        mostraInfos(Controle.mesas.get(0));
+    }//GEN-LAST:event_btnMesa1ActionPerformed
 
     private void btnMesa2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa2ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(1));
+    }//GEN-LAST:event_btnMesa2ActionPerformed
 
     private void btnMesa3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa3ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(2));
+    }//GEN-LAST:event_btnMesa3ActionPerformed
 
     private void btnMesa4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa4ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(3));
+    }//GEN-LAST:event_btnMesa4ActionPerformed
 
     private void btnMesa5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa5ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(4));
+    }//GEN-LAST:event_btnMesa5ActionPerformed
 
     private void btnMesa6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa6ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(5));
+    }//GEN-LAST:event_btnMesa6ActionPerformed
 
     private void btnMesa7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa7ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(6));
+    }//GEN-LAST:event_btnMesa7ActionPerformed
 
     private void btnMesa8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa8ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(7));
+    }//GEN-LAST:event_btnMesa8ActionPerformed
 
     private void btnMesa9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa9ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(8));
+    }//GEN-LAST:event_btnMesa9ActionPerformed
 
     private void btnMesa10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa10ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(9));
+    }//GEN-LAST:event_btnMesa10ActionPerformed
 
     private void btnMesa11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa11ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(10));
+    }//GEN-LAST:event_btnMesa11ActionPerformed
 
     private void btnMesa12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa12ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(11));
+    }//GEN-LAST:event_btnMesa12ActionPerformed
 
     private void btnMesa13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa13ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(12));
+    }//GEN-LAST:event_btnMesa13ActionPerformed
 
     private void btnMesa14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa14ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(13));
+    }//GEN-LAST:event_btnMesa14ActionPerformed
 
     private void btnMesa15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa15ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(14));
+    }//GEN-LAST:event_btnMesa15ActionPerformed
 
     private void btnMesa16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesa16ActionPerformed
-        // TODO add your handling code here:
-    }
+        mostraInfos(Controle.mesas.get(15));
+    }//GEN-LAST:event_btnMesa16ActionPerformed
 
     private void mniCadastrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniCadastrarClienteActionPerformed
         // abre a tela de cadastro de clientes
         new CadastroCliente().setVisible(true);
-    }
+    }//GEN-LAST:event_mniCadastrarClienteActionPerformed
 
     private void mniCadastrarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniCadastrarFuncionarioActionPerformed
         // abre a tela de cadastro de funcionarios
-        new CadastroFuncionario().setVisible(true);
-    }
+        new AutorizacaoGerente(2).setVisible(true);
+    }//GEN-LAST:event_mniCadastrarFuncionarioActionPerformed
 
     private void mniRelatorioClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioClientesActionPerformed
         // abre a tela de relatorio dos clientes
         new RelatorioClientes().setVisible(true);
-    }
+    }//GEN-LAST:event_mniRelatorioClientesActionPerformed
 
     private void mniRelatorioFuncionariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioFuncionariosActionPerformed
         // abre a tela de relatorio dos funcionarios
-        new RelatorioFuncionarios().setVisible(true);
-    }
+        new AutorizacaoGerente(3).setVisible(true);
+    }//GEN-LAST:event_mniRelatorioFuncionariosActionPerformed
 
-    private void mniRelatorioFinanceiroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioFinanceiroActionPerformed
+    private void mniRelatorioGeralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioGeralActionPerformed
         // abre a tela de relatorio financeiro
-        new RelatorioFinanceiro().setVisible(true);
-    }
+        new RelatorioGeral().setVisible(true);
+    }//GEN-LAST:event_mniRelatorioGeralActionPerformed
 
-    private void txtValorParcialComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorParcialComandaActionPerformed
-        // TODO add your handling code here:
-    }
-
-    private void mniPedidosSalaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniPedidosSalaoActionPerformed
+    private void mniNovoPedidoSalaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniNovoPedidoSalaoActionPerformed
         new NovoPedido().setVisible(true);
-    }
+    }//GEN-LAST:event_mniNovoPedidoSalaoActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void mniRelatorioPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniRelatorioPedidosActionPerformed
         new RelatorioPedidos().setVisible(true);
-    }
+    }//GEN-LAST:event_mniRelatorioPedidosActionPerformed
 
     private void mniFecharSistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniFecharSistemaActionPerformed
-        new AutorizacaoGerente().setVisible(true);
-        // TODO add your handling code here:
-    }
+        // abre a tela de autenticação do gerente e, caso autenticado, posteriormente fecha-se o programa
+        new AutorizacaoGerente(0).setVisible(true);
+    }//GEN-LAST:event_mniFecharSistemaActionPerformed
 
-    private void mniSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniSalvarActionPerformed
-        JOptionPane.showMessageDialog(null, "As informações foram salvas com sucesso.", "Mensagem", JOptionPane.INFORMATION_MESSAGE);
-    }
+    private void btnComandaEspecialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComandaEspecialActionPerformed
+        // pode abrir ou a tela de relatório dos pedidos ou a tela de novo pedido
+        if (Controle.mesas.get(Integer.parseInt(this.lblNumMesaDescricao.getText())-1).isDisponivel()) {
+            // se a mesa estiver disponível, é porque não tem comanda, então abre a tela de novo pedido
+            new NovoPedido((Integer.parseInt(this.lblNumMesaDescricao.getText()))).setVisible(true);
+        } else {
+            // se não, abre a tela de edição de pedido
+            for (Comanda comanda : Controle.comandas) {
+                if (comanda.getIdComanda() == Integer.parseInt(this.lblIdComandaDescricao.getText()))
+                    new EditarPedido(comanda).setVisible(true);
+            }
+        }
+        
+    }//GEN-LAST:event_btnComandaEspecialActionPerformed
 
-    private void cmbClienteComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbClienteComandaActionPerformed
-        // TODO add your handling code here:
-    }
+    private void mniEditarCardapioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniEditarCardapioActionPerformed
+        // abre a tela de autenticação do gerente e, caso autenticado, posteriormente abre a tela do cardapio
+        new AutorizacaoGerente(1).setVisible(true);
+    }//GEN-LAST:event_mniEditarCardapioActionPerformed
 
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -769,7 +932,10 @@ public class TelaMesas extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaMesas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
 
+        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TelaMesas().setVisible(true);
@@ -778,7 +944,7 @@ public class TelaMesas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnFecharComanda;
+    private javax.swing.JButton btnComandaEspecial;
     private javax.swing.JButton btnMesa1;
     private javax.swing.JButton btnMesa10;
     private javax.swing.JButton btnMesa11;
@@ -795,17 +961,18 @@ public class TelaMesas extends javax.swing.JFrame {
     private javax.swing.JButton btnMesa7;
     private javax.swing.JButton btnMesa8;
     private javax.swing.JButton btnMesa9;
-    private javax.swing.JComboBox<String> cmbClienteComanda;
-    private javax.swing.JComboBox<String> cmbGarcomComanda;
-    private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuBar jmbPrincipal;
     private javax.swing.JLabel lblCapacidade;
     private javax.swing.JLabel lblCapacidadeDescricao;
     private javax.swing.JLabel lblClienteComanda;
+    private javax.swing.JLabel lblClienteComandaDescricao;
     private javax.swing.JLabel lblDetalhesComanda;
     private javax.swing.JLabel lblGarcomComanda;
+    private javax.swing.JLabel lblGarcomComandaDescricao;
     private javax.swing.JLabel lblHoraPedidoComanda;
+    private javax.swing.JLabel lblHoraPedidoComandaDescricao;
     private javax.swing.JLabel lblIdComanda;
+    private javax.swing.JLabel lblIdComandaDescricao;
     private javax.swing.JLabel lblItensPedidosComanda;
     private javax.swing.JLabel lblMesa;
     private javax.swing.JLabel lblNumMesa;
@@ -813,26 +980,26 @@ public class TelaMesas extends javax.swing.JFrame {
     private javax.swing.JLabel lblOcupada;
     private javax.swing.JLabel lblOcupadaDescricao;
     private javax.swing.JLabel lblValorParcialComanda;
+    private javax.swing.JLabel lblValorParcialComandaDescricao;
     private javax.swing.JLabel lblVisualizacaoMesas;
     private javax.swing.JMenu mnCadastro;
+    private javax.swing.JMenu mnCardapio;
     private javax.swing.JMenu mnPedidos;
     private javax.swing.JMenu mnRelatórios;
     private javax.swing.JMenu mnSistema;
     private javax.swing.JMenuItem mniCadastrarCliente;
     private javax.swing.JMenuItem mniCadastrarFuncionario;
+    private javax.swing.JMenuItem mniEditarCardapio;
     private javax.swing.JMenuItem mniFecharSistema;
-    private javax.swing.JMenuItem mniPedidosDelivery;
-    private javax.swing.JMenuItem mniPedidosSalao;
+    private javax.swing.JMenuItem mniNovoPedidoDelivery;
+    private javax.swing.JMenuItem mniNovoPedidoSalao;
     private javax.swing.JMenuItem mniRelatorioClientes;
-    private javax.swing.JMenuItem mniRelatorioFinanceiro;
     private javax.swing.JMenuItem mniRelatorioFuncionarios;
-    private javax.swing.JMenuItem mniSalvar;
+    private javax.swing.JMenuItem mniRelatorioGeral;
+    private javax.swing.JMenuItem mniRelatorioPedidos;
     private javax.swing.JPanel pnlComandaMesa;
     private javax.swing.JPanel pnlMesaSelecionada;
     private javax.swing.JScrollPane scrItensPedidosComanda;
     private javax.swing.JTable tblItensPedidosComanda;
-    private javax.swing.JTextField txtHoraPedidoComanda;
-    private javax.swing.JTextField txtIdComanda;
-    private javax.swing.JTextField txtValorParcialComanda;
     // End of variables declaration//GEN-END:variables
 }
