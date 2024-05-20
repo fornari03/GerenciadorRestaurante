@@ -18,7 +18,7 @@ public abstract class ManipulaArquivos {
      */
     public static void importandoDadosFuncionario() {
         
-        try (BufferedReader buffRead = new BufferedReader(new FileReader("Funcionarios.txt"))) {
+        try (BufferedReader buffRead = new BufferedReader(new FileReader("Gerenciador/Funcionarios.txt"))) {
             String linha;
             while ((linha = buffRead.readLine()) != null) {
                 // enquanto a linha não for vazia, continua lendo
@@ -48,7 +48,7 @@ public abstract class ManipulaArquivos {
      */
     public static void importandoDadosCliente() {
         
-        try (BufferedReader buffRead = new BufferedReader(new FileReader("Clientes.txt"))) {
+        try (BufferedReader buffRead = new BufferedReader(new FileReader("Gerenciador/Clientes.txt"))) {
             String linha;
             while ((linha = buffRead.readLine()) != null) {
                 // enquanto a linha não for vazia, continua lendo
@@ -68,7 +68,7 @@ public abstract class ManipulaArquivos {
      */
     public static void importandoDadosCardapio() {
 
-        try (BufferedReader buffRead = new BufferedReader(new FileReader("Cardapio.txt"))) {
+        try (BufferedReader buffRead = new BufferedReader(new FileReader("Gerenciador/Cardapio.txt"))) {
             String linha;
             while ((linha = buffRead.readLine()) != null) {
                 // enquanto a linha não for vazia, continua lendo
@@ -89,7 +89,7 @@ public abstract class ManipulaArquivos {
      */
     public static Object[] importandoDadosGerais() {
 
-        try (BufferedReader buffReadGerais = new BufferedReader(new FileReader("Gerais.txt"))) {
+        try (BufferedReader buffReadGerais = new BufferedReader(new FileReader("Gerenciador/Gerais.txt"))) {
             String linha;
             double receita = 0;
             int quantPedidos = 0;
